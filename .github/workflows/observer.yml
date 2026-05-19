@@ -43,7 +43,7 @@ jobs:
           initial_delay: "60"
           max_timeout: "3600"
           poll_interval: "15"
-          ignored_workflows: "Observer,CodeQL,Dependabot"
+          ignored_workflows: "Observer,CodeQL,Dependabot,Copilot cloud agent"
           # api_url: ${{ secrets.API_URL }}
           # api_key: ${{ secrets.API_KEY }}
           generate_svg_report: "true"
