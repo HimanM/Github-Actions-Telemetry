@@ -203,22 +203,32 @@ These fields are consistently outputted every time the observer completes:
 | `repository` | The full name of the repository in the format owner/repo. | `octocat/Hello-World` |
 | `telemetry_session` | Canonical session ID using repo and SHA. | `octocat/Hello-World@abc123` |
 | `head_sha` / `trigger_sha`| The commit SHA that triggered the workflow session. | `abc123...` |
+| `branch` | The branch or tag ref that triggered the session. | `main` |
 | `event` | The name of the webhook event that triggered the observer. | `push`, `workflow_dispatch` |
-| `commit` | Object containing commit metadata (author, message, timestamp). | `{"message": "fix auth issue"}` |
+| `commit` | Object containing commit metadata (sha, message, author_name, author_email, timestamp). | `{"sha": "...", "message": "fix auth issue"}` |
 | `observer_started_at` | The exact UTC timestamp when the observer began evaluation. | `2024-05-19T10:15:30Z` |
+| `observer_completed_at` | The exact UTC timestamp when the observer finished evaluation. | `2024-05-19T10:16:30Z` |
 | `total_workflows` | Total number of workflow definitions existing in the repository. | `6` |
 | `workflows_ran` | Count of workflows that actually executed. | `3` |
+| `workflows_not_triggered` | Count of workflows that did not execute. | `3` |
 | `workflows` | Array containing detailed objects of every workflow (ran or not). | `[{...}, {...}]` |
 
 ### Conditional Keys
-These fields depend on the type of event or whether a specific workflow actually executed:
+These fields depend on the type of event or whether a specific workflow actually executed (typically found inside the `workflows` array items):
 
 | Field | Description | Condition |
 |---|---|---|
-| `branch` | The branch or tag ref that triggered the session. | Usually present, but may differ during scheduled runs or PRs. |
-| Workflow `jobs` | Array of detailed job and step metrics within a workflow. | Only populated for workflows where `ran` is `true`. Workflows that didn't trigger will only show `{ "ran": false }` and basic IDs. |
-| Workflow `run_id` / `run_number` | Execution identifiers for the workflow run. | Only present if the workflow actually ran. |
-| Workflow `duration_seconds` | Calculated duration of the run. | Only present if the workflow completed (requires `started_at` and `updated_at`). |
+| Workflow `exists` | Boolean indicating if the workflow exists in the repository. | Always present inside workflow objects. |
+| Workflow `ran` | Boolean indicating if the workflow executed during this session. | Always present inside workflow objects. |
+| Workflow `workflow_id` / `workflow_name` | Identifiers for the workflow definition. | Always present inside workflow objects. |
+| Workflow `head_sha` | The SHA the workflow evaluated against. | Always present inside workflow objects. |
+| Workflow `branch` / `event` / `actor` | Git context for the workflow execution. | Only present if `ran` is `true`. |
+| Workflow `status` / `conclusion` | The state of the workflow execution. | Only present if `ran` is `true`. |
+| Workflow `created_at` / `started_at` / `completed_at` | Timestamps for the workflow lifecycle. | Only present if `ran` is `true`. |
+| Workflow `html_url` | Link to the workflow execution on GitHub. | Only present if `ran` is `true`. |
+| Workflow `jobs` | Array of detailed job and step metrics within a workflow. | Only populated for workflows where `ran` is `true`. |
+| Workflow `run_id` / `run_number` | Execution identifiers for the workflow run. | Only present if `ran` is `true`. |
+| Workflow `duration_seconds` | Calculated duration of the run. | Only present if `ran` is `true` and the workflow completed. |
 | Workflow `last_run` | Object containing metadata about the most recent historical execution. | Only populated for workflows where `ran` is `false`. |
 
 ## Developer Section
