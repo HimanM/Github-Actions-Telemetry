@@ -21,10 +21,13 @@ HEADERS = {
 
 OUTPUT_DIR = "test_jsons"
 
-IGNORED_WORKFLOW_NAMES = ["Observer", "CodeQL", "Dependabot"]
+IGNORED_WORKFLOW_NAMES = [x.strip() for x in os.environ.get("IGNORED_WORKFLOWS", "Observer,CodeQL,Dependabot").split(",") if x.strip()]
 NON_TERMINAL_STATES = ["queued", "waiting", "requested", "pending", "in_progress"]
-MAX_TIMEOUT_SECONDS = 3600 # 1 hour timeout (increased from 20 mins)
-POLL_INTERVAL = 15
+MAX_TIMEOUT_SECONDS = int(os.environ.get("MAX_TIMEOUT", "3600"))
+POLL_INTERVAL = int(os.environ.get("POLL_INTERVAL", "15"))
+
+EXTERNAL_API_URL = os.environ.get("API_URL")
+EXTERNAL_API_KEY = os.environ.get("API_KEY")
 
 # --- Utils ---
 def get_paged(url, params=None):
@@ -253,6 +256,20 @@ def main():
         json.dump(payload, f, indent=2)
         
     print(f"Telemetry saved successfully to {out_path}")
+    
+    # 8. External API Upload (Optional)
+    if EXTERNAL_API_URL:
+        print(f"Uploading telemetry to external API: {EXTERNAL_API_URL}")
+        upload_headers = {"Content-Type": "application/json"}
+        if EXTERNAL_API_KEY:
+            upload_headers["Authorization"] = f"Bearer {EXTERNAL_API_KEY}"
+            
+        try:
+            res = requests.post(EXTERNAL_API_URL, json=payload, headers=upload_headers)
+            res.raise_for_status()
+            print("Successfully uploaded telemetry payload.")
+        except Exception as e:
+            print(f"Failed to upload telemetry to external API: {e}")
 
 if __name__ == "__main__":
     main()

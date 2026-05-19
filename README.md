@@ -22,7 +22,7 @@ Per the MVP design, this pattern removes the need to embed telemetry logic direc
 
 ### Integrating into other Repositories
 
-Because the inner workings of the Python polling logic are tightly wrapped in a single composite action, utilizing this from any arbitrary repository is incredibly simple. All you need is the token, and an optional initial delay.
+Because the inner workings of the Python polling logic are tightly wrapped in a single composite action, utilizing this from any arbitrary repository is incredibly simple. All you need is the token, and you can optionally override various configurations.
 
 ```yaml
 jobs:
@@ -34,7 +34,16 @@ jobs:
         uses: HimanM/Github-Actions-Telemetry@main
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          initial_delay: '45' # Defaults to 60 if not specified
+          
+          # Optional inputs and their default values:
+          initial_delay: '60'               # Wait 60s before tracking starts
+          max_timeout: '3600'               # Global timeout in seconds (1 hour)
+          poll_interval: '15'               # Seconds between API polls
+          ignored_workflows: 'Observer,CodeQL,Dependabot'
+          
+          # Telemetry export
+          # api_url: 'https://api.yourdomain.com/v1/telemetry'
+          # api_key: ${{ secrets.TELEMETRY_API_KEY }}
 ```
 
 ## Triggering on Manual Workflows
