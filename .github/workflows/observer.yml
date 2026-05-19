@@ -50,3 +50,10 @@ jobs:
         with:
           name: telemetry-test-jsons
           path: test_jsons/
+          
+      - name: Upload SVG Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workflow-svg-report
+          path: workflow_status.svg

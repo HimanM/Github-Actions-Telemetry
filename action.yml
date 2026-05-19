@@ -71,3 +71,6 @@ runs:
       run: |
         echo "Generating SVG report using generate_svg.py..."
         python ${{ github.action_path }}/scripts/generate_svg.py
+        if [ -n "$GITHUB_OUTPUT" ]; then
+          echo "svg_path=workflow_status.svg" >> "$GITHUB_OUTPUT"
+        fi
