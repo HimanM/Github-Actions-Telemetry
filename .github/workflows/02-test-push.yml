@@ -5,3 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "This runs on a push"
+
+      - name: This step is skipped
+        if: false
+        run: echo "I should be skipped"

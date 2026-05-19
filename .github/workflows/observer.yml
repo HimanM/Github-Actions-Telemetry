@@ -41,7 +41,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           initial_delay: "60"
-          max_timeout: "3600"
+          max_timeout: "120"
           poll_interval: "15"
           ignored_workflows: "Observer,CodeQL,Dependabot,Copilot cloud agent"
           # api_url: ${{ secrets.API_URL }}

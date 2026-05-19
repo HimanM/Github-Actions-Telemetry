@@ -1,0 +1,14 @@
+name: 08 - Test Pending Skipped
+on: push
+jobs:
+  pending-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for 5 minutes
+        run: sleep 300
+  skipped-job:
+    needs: pending-job
+    runs-on: ubuntu-latest
+    if: false
+    steps:
+      - run: echo "This job is skipped after waiting for the pending job"

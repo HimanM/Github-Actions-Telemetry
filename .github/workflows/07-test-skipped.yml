@@ -1,0 +1,8 @@
+name: 07 - Test Skipped
+on: push
+jobs:
+  skip-me:
+    runs-on: ubuntu-latest
+    if: false
+    steps:
+      - run: echo "This entire job and workflow is skipped"
