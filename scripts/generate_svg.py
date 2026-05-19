@@ -63,10 +63,11 @@ def generate_svg(json_path, output_path):
         # Gathering steps if available
         steps = []
         if ran:
-            status = wf.get("conclusion", wf.get("status", "unknown"))
-            duration = wf.get("duration_seconds", 0)
+            status = wf.get("conclusion") or wf.get("status") or "unknown"
+            duration = wf.get("duration_seconds") or 0
             time_str = f"{duration}s"
-            timestamp = wf.get("started_at", "Unknown").replace("T", " ").replace("Z", "")
+            started_val = wf.get("started_at") or "Unknown"
+            timestamp = started_val.replace("T", " ").replace("Z", "")
             event_type = wf.get("event", "unknown")
             timestamp_desc = f"{timestamp} • trigger: {event_type}"
             
@@ -76,9 +77,11 @@ def generate_svg(json_path, output_path):
         else:
             last_run = wf.get("last_run")
             if last_run:
-                status = last_run.get("conclusion", "skipped/not run")
-                time_str = f"Last: {last_run.get('duration_seconds', 0)}s"
-                timestamp = last_run.get("started_at", "Unknown").replace("T", " ").replace("Z", "")
+                status = last_run.get("conclusion") or "skipped/not run"
+                last_duration = last_run.get("duration_seconds") or 0
+                time_str = f"Last: {last_duration}s"
+                last_started = last_run.get("started_at") or "Unknown"
+                timestamp = last_started.replace("T", " ").replace("Z", "")
                 event_type = last_run.get("event", "historical")
                 timestamp_desc = f"{timestamp} • prev trigger: {event_type}"
                 # We typically don't have historical steps for non-triggered runs in our simple JSON payload
@@ -117,7 +120,7 @@ def generate_svg(json_path, output_path):
             svg.append(f'<rect x="{pill_x}" y="{pill_y}" width="{pill_width}" height="{pill_height}" fill="#ebecf0" />')
             
             for i, step in enumerate(steps):
-                step_conc = step.get("conclusion", step.get("status", ""))
+                step_conc = step.get("conclusion") or step.get("status") or "unknown"
                 step_color = get_status_color(step_conc)
                 s_x = pill_x + (i * step_width)
                 svg.append(f'<rect x="{s_x}" y="{pill_y}" width="{step_width}" height="{pill_height}" fill="{step_color}" />')
