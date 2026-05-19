@@ -37,7 +37,7 @@ jobs:
 
       # 2. Run the Telemetry Observer Action
       - name: Run Telemetry Observer Action
-        uses: ./
+        uses: HimanM/Github-Actions-Telemetry@main
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           initial_delay: "60"
