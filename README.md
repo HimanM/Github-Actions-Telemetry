@@ -22,28 +22,53 @@ Per the MVP design, this pattern removes the need to embed telemetry logic direc
 
 ### Integrating into other Repositories
 
-Because the inner workings of the Python polling logic are tightly wrapped in a single composite action, utilizing this from any arbitrary repository is incredibly simple. All you need is the token, and you can optionally override various configurations.
+Because the core polling and visualization logic is tightly wrapped inside a Composite Action (`action.yml`), integrating this into *any* other GitHub repository is incredibly simple. Other users do not need to clone this repository; they only need to reference it directly using the `uses:` syntax.
+
+Here is a complete usage example to drop into any external repository:
 
 ```yaml
+name: Global Telemetry Observer
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  actions: read   # Required to read workflow run statuses
+  contents: read  # Required to grab commit metadata
+
 jobs:
   telemetry:
     runs-on: ubuntu-latest
     steps:
-      # Use the centralized observer directly from this repository
       - name: Observer Telemetry Agent
         uses: HimanM/Github-Actions-Telemetry@main
         with:
+          # Required: GitHub Token to securely authenticate with GitHub's REST API
           github_token: ${{ secrets.GITHUB_TOKEN }}
           
-          # Optional inputs and their default values:
-          initial_delay: '60'               # Wait 60s before tracking starts
-          max_timeout: '3600'               # Global timeout in seconds (1 hour)
-          poll_interval: '15'               # Seconds between API polls
-          ignored_workflows: 'Observer,CodeQL,Dependabot'
+          # Optional Configuration (Defaults shown below)
+          initial_delay: '60'               # Wait 60s before tracking starts to allow other jobs to queue
+          max_timeout: '3600'               # Global timeout in seconds (1 hour) before giving up
+          poll_interval: '15'               # Seconds between API polls for live jobs
+          ignored_workflows: 'Observer,CodeQL,Dependabot' # Comma-separated list to prevent recursion
           
-          # Telemetry export
+          # Optional: External webhook export
           # api_url: 'https://api.yourdomain.com/v1/telemetry'
           # api_key: ${{ secrets.TELEMETRY_API_KEY }}
+
+          # Optional: Generate a visual SVG timeline report 
+          generate_svg_report: 'true'
+
+      # The Action automatically outputs the path to the SVG diagram
+      # We can upload it as an artifact so it can be viewed!
+      - name: Upload SVG Timeline Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workflow-svg-report
+          # Retrieve the automatically exposed SVG path from the observer step
+          path: ${{ steps.observer.outputs.svg_path || 'workflow_status.svg' }}
 ```
 
 ## Triggering on Manual Workflows
