@@ -1,0 +1,432 @@
+{
+  "repository": "HimanM/Github-Actions-Telemetry",
+  "telemetry_session": "HimanM/Github-Actions-Telemetry@65cc4ce4e5ce5527446108241b99b52853c5bafb",
+  "head_sha": "65cc4ce4e5ce5527446108241b99b52853c5bafb",
+  "trigger_sha": "65cc4ce4e5ce5527446108241b99b52853c5bafb",
+  "branch": "main",
+  "event": "workflow_run",
+  "commit": {
+    "sha": "65cc4ce4e5ce5527446108241b99b52853c5bafb",
+    "message": "Merge branch 'main' of https://github.com/HimanM/Github-Actions-Telemetry",
+    "author_name": "HimanM",
+    "author_email": "67066047+HimanM@users.noreply.github.com",
+    "timestamp": "2026-05-19T06:07:37Z"
+  },
+  "observer_started_at": "2026-05-19T06:07:56Z",
+  "observer_completed_at": "2026-05-19T06:11:05Z",
+  "total_workflows": 8,
+  "workflows_ran": 7,
+  "workflows_not_triggered": 1,
+  "workflows": [
+    {
+      "workflow_id": 279212381,
+      "workflow_name": "02 - Test Commit Trigger",
+      "run_id": 26079570362,
+      "run_number": 29,
+      "head_sha": "65cc4ce4e5ce5527446108241b99b52853c5bafb",
+      "branch": "main",
+      "event": "push",
+      "actor": "HimanM",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-05-19T06:07:42Z",
+      "started_at": "2026-05-19T06:07:42Z",
+      "completed_at": "2026-05-19T06:07:49Z",
+      "duration_seconds": 7,
+      "html_url": "https://github.com/HimanM/Github-Actions-Telemetry/actions/runs/26079570362",
+      "jobs": [
+        {
+          "job_id": 76677782623,
+          "name": "run-push",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-05-19T06:07:45Z",
+          "completed_at": "2026-05-19T06:07:48Z",
+          "duration_seconds": 3,
+          "runner_name": "GitHub Actions 1000003175",
+          "steps": [
+            {
+              "number": 1,
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "started_at": "2026-05-19T06:07:46Z",
+              "completed_at": "2026-05-19T06:07:46Z"
+            },
+            {
+              "number": 2,
+              "name": "Run echo \"This runs on a push\"",
+              "status": "completed",
+              "conclusion": "success",
+              "started_at": "2026-05-19T06:07:46Z",
+              "completed_at": "2026-05-19T06:07:46Z"
+            },
+            {
+              "number": 3,
+              "name": "This step is skipped",
+              "status": "completed",
+              "conclusion": "skipped",
+              "started_at": "2026-05-19T06:07:46Z",
+              "completed_at": "2026-05-19T06:07:46Z"
+            },
+            {
+              "number": 4,
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "started_at": "2026-05-19T06:07:46Z",
+              "completed_at": "2026-05-19T06:07:46Z"
+            }
+          ]
+        }
+      ],
+      "exists": true,
+      "ran": true
+    },
+    {
+      "workflow_id": 279212382,
+      "workflow_name": "03 - Test Long Running",
+      "run_id": 26079570382,
+      "run_number": 29,
+      "head_sha": "65cc4ce4e5ce5527446108241b99b52853c5bafb",
+      "branch": "main",
+      "event": "push",
+      "actor": "HimanM",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-05-19T06:07:42Z",
+      "started_at": "2026-05-19T06:07:42Z",
+      "completed_at": "2026-05-19T06:08:17Z",
+      "duration_seconds": 35,
+      "html_url": "https://github.com/HimanM/Github-Actions-Telemetry/actions/runs/26079570382",
+      "jobs": [
+        {
+          "job_id": 76677782604,
+          "name": "run-long",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-05-19T06:07:44Z",
+          "completed_at": "2026-05-19T06:08:16Z",
+          "duration_seconds": 32,
+          "runner_name": "GitHub Actions 1000003172",
+          "steps": [
+            {
+              "number": 1,
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "started_at": "2026-05-19T06:07:45Z",
+              "completed_at": "2026-05-19T06:07:45Z"
+            },
+            {
+              "number": 2,
+              "name": "Work Hard",
+              "status": "completed",
+              "conclusion": "success",
+              "started_at": "2026-05-19T06:07:45Z",
+              "completed_at": "2026-05-19T06:08:15Z"
+            },
+            {
+              "number": 3,
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "started_at": "2026-05-19T06:08:15Z",
+              "completed_at": "2026-05-19T06:08:15Z"
+            }
+          ]
+        }
+      ],
+      "exists": true,
+      "ran": true
+    },
+    {
+      "workflow_id": 279212383,
+      "workflow_name": "04 - Test Upstream Dependent",
+      "run_id": 26079570338,
+      "run_number": 29,
+      "head_sha": "65cc4ce4e5ce5527446108241b99b52853c5bafb",
+      "branch": "main",
+      "event": "push",
+      "actor": "HimanM",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-05-19T06:07:42Z",
+      "started_at": "2026-05-19T06:07:42Z",
+      "completed_at": "2026-05-19T06:07:59Z",
+      "duration_seconds": 17,
+      "html_url": "https://github.com/HimanM/Github-Actions-Telemetry/actions/runs/26079570338",
+      "jobs": [
+        {
+          "job_id": 76677782594,
+          "name": "run-upstream",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-05-19T06:07:45Z",
+          "completed_at": "2026-05-19T06:07:59Z",
+          "duration_seconds": 14,
+          "runner_name": "GitHub Actions 1000003174",
+          "steps": [
+            {
+              "number": 1,
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "started_at": "2026-05-19T06:07:46Z",
+              "completed_at": "2026-05-19T06:07:46Z"
+            },
+            {
+              "number": 2,
+              "name": "Run echo \"I am upstream, running...\"",
+              "status": "completed",
+              "conclusion": "success",
+              "started_at": "2026-05-19T06:07:46Z",
+              "completed_at": "2026-05-19T06:07:56Z"
+            },
+            {
+              "number": 3,
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "started_at": "2026-05-19T06:07:56Z",
+              "completed_at": "2026-05-19T06:07:57Z"
+            }
+          ]
+        }
+      ],
+      "exists": true,
+      "ran": true
+    },
+    {
+      "workflow_id": 279212384,
+      "workflow_name": "05 - Test Downstream Dependent",
+      "run_id": 26079581559,
+      "run_number": 29,
+      "head_sha": "65cc4ce4e5ce5527446108241b99b52853c5bafb",
+      "branch": "main",
+      "event": "workflow_run",
+      "actor": "HimanM",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-05-19T06:08:02Z",
+      "started_at": "2026-05-19T06:08:02Z",
+      "completed_at": "2026-05-19T06:08:09Z",
+      "duration_seconds": 7,
+      "html_url": "https://github.com/HimanM/Github-Actions-Telemetry/actions/runs/26079581559",
+      "jobs": [
+        {
+          "job_id": 76677819671,
+          "name": "run-downstream",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-05-19T06:08:05Z",
+          "completed_at": "2026-05-19T06:08:08Z",
+          "duration_seconds": 3,
+          "runner_name": "GitHub Actions 1000003179",
+          "steps": [
+            {
+              "number": 1,
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "started_at": "2026-05-19T06:08:06Z",
+              "completed_at": "2026-05-19T06:08:06Z"
+            },
+            {
+              "number": 2,
+              "name": "Run echo \"I run after 04 finishes!\"",
+              "status": "completed",
+              "conclusion": "success",
+              "started_at": "2026-05-19T06:08:06Z",
+              "completed_at": "2026-05-19T06:08:06Z"
+            },
+            {
+              "number": 3,
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "started_at": "2026-05-19T06:08:06Z",
+              "completed_at": "2026-05-19T06:08:06Z"
+            }
+          ]
+        }
+      ],
+      "exists": true,
+      "ran": true
+    },
+    {
+      "workflow_id": 279239343,
+      "workflow_name": "06 - Intentional Failure (for testing)",
+      "run_id": 26079570314,
+      "run_number": 23,
+      "head_sha": "65cc4ce4e5ce5527446108241b99b52853c5bafb",
+      "branch": "main",
+      "event": "push",
+      "actor": "HimanM",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-05-19T06:07:42Z",
+      "started_at": "2026-05-19T06:07:42Z",
+      "completed_at": "2026-05-19T06:07:48Z",
+      "duration_seconds": 6,
+      "html_url": "https://github.com/HimanM/Github-Actions-Telemetry/actions/runs/26079570314",
+      "jobs": [
+        {
+          "job_id": 76677782629,
+          "name": "Intentional failing job",
+          "status": "completed",
+          "conclusion": "failure",
+          "started_at": "2026-05-19T06:07:44Z",
+          "completed_at": "2026-05-19T06:07:48Z",
+          "duration_seconds": 4,
+          "runner_name": "GitHub Actions 1000003177",
+          "steps": [
+            {
+              "number": 1,
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "started_at": "2026-05-19T06:07:45Z",
+              "completed_at": "2026-05-19T06:07:46Z"
+            },
+            {
+              "number": 2,
+              "name": "Checkout",
+              "status": "completed",
+              "conclusion": "success",
+              "started_at": "2026-05-19T06:07:46Z",
+              "completed_at": "2026-05-19T06:07:47Z"
+            },
+            {
+              "number": 3,
+              "name": "Show message then fail",
+              "status": "completed",
+              "conclusion": "failure",
+              "started_at": "2026-05-19T06:07:47Z",
+              "completed_at": "2026-05-19T06:07:47Z"
+            },
+            {
+              "number": 6,
+              "name": "Post Checkout",
+              "status": "completed",
+              "conclusion": "success",
+              "started_at": "2026-05-19T06:07:47Z",
+              "completed_at": "2026-05-19T06:07:47Z"
+            },
+            {
+              "number": 7,
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "started_at": "2026-05-19T06:07:47Z",
+              "completed_at": "2026-05-19T06:07:47Z"
+            }
+          ]
+        }
+      ],
+      "exists": true,
+      "ran": true
+    },
+    {
+      "workflow_id": 279292971,
+      "workflow_name": "07 - Test Skipped",
+      "run_id": 26079570357,
+      "run_number": 1,
+      "head_sha": "65cc4ce4e5ce5527446108241b99b52853c5bafb",
+      "branch": "main",
+      "event": "push",
+      "actor": "HimanM",
+      "status": "completed",
+      "conclusion": "skipped",
+      "created_at": "2026-05-19T06:07:42Z",
+      "started_at": "2026-05-19T06:07:42Z",
+      "completed_at": "2026-05-19T06:07:43Z",
+      "duration_seconds": 1,
+      "html_url": "https://github.com/HimanM/Github-Actions-Telemetry/actions/runs/26079570357",
+      "jobs": [
+        {
+          "job_id": 76677783042,
+          "name": "skip-me",
+          "status": "completed",
+          "conclusion": "skipped",
+          "started_at": "2026-05-19T06:07:43Z",
+          "completed_at": "2026-05-19T06:07:42Z",
+          "duration_seconds": -1,
+          "runner_name": null,
+          "steps": []
+        }
+      ],
+      "exists": true,
+      "ran": true
+    },
+    {
+      "workflow_id": 279292972,
+      "workflow_name": "08 - Test Pending Skipped",
+      "run_id": 26079570324,
+      "run_number": 1,
+      "head_sha": "65cc4ce4e5ce5527446108241b99b52853c5bafb",
+      "branch": "main",
+      "event": "push",
+      "actor": "HimanM",
+      "status": "in_progress",
+      "conclusion": null,
+      "created_at": "2026-05-19T06:07:42Z",
+      "started_at": "2026-05-19T06:07:42Z",
+      "completed_at": "2026-05-19T06:07:47Z",
+      "duration_seconds": 5,
+      "html_url": "https://github.com/HimanM/Github-Actions-Telemetry/actions/runs/26079570324",
+      "jobs": [
+        {
+          "job_id": 76677782694,
+          "name": "pending-job",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_at": "2026-05-19T06:07:46Z",
+          "completed_at": null,
+          "duration_seconds": null,
+          "runner_name": "GitHub Actions 1000003173",
+          "steps": [
+            {
+              "number": 1,
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "started_at": "2026-05-19T06:07:47Z",
+              "completed_at": "2026-05-19T06:07:47Z"
+            },
+            {
+              "number": 2,
+              "name": "Wait for 5 minutes",
+              "status": "in_progress",
+              "conclusion": null,
+              "started_at": "2026-05-19T06:07:47Z",
+              "completed_at": null
+            }
+          ]
+        }
+      ],
+      "exists": true,
+      "ran": true
+    },
+    {
+      "workflow_id": 279212379,
+      "workflow_name": "01 - Test Manual Trigger",
+      "head_sha": "65cc4ce4e5ce5527446108241b99b52853c5bafb",
+      "exists": true,
+      "ran": false,
+      "last_run": {
+        "run_id": 26072581379,
+        "run_number": 1,
+        "event": "workflow_dispatch",
+        "head_sha": "b321b8b25e086c01b2f94d57a1a322d24a5e52de",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-05-19T02:31:42Z",
+        "started_at": "2026-05-19T02:31:42Z",
+        "completed_at": "2026-05-19T02:31:48Z",
+        "duration_seconds": 6,
+        "html_url": "https://github.com/HimanM/Github-Actions-Telemetry/actions/runs/26072581379"
+      }
+    }
+  ]
+}
