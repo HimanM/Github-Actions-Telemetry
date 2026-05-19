@@ -28,10 +28,18 @@
 <text x="615" y="95" class="text wf-meta" fill="#238636">SUCCESS (7s)</text>
 <rect x="20" y="135" width="610" height="55" class="card" />
 <circle cx="35" cy="160" r="6" fill="#238636" />
-<text x="50" y="160" class="text wf-name">01 - Test Manual Trigger</text>
-<text x="50" y="177" class="text timestamp">2026-05-19 02:31:42 • prev trigger: workflow_dispatch</text>
-<rect x="455" y="170" width="160" height="8" rx="4" ry="4" fill="#238636" />
-<text x="615" y="160" class="text wf-meta" fill="#238636">SUCCESS (Last: 6s)</text>
+<text x="50" y="160" class="text wf-name">03 - Test Long Running</text>
+<text x="50" y="177" class="text timestamp">2026-05-19 05:42:09 • trigger: push</text>
+<clipPath id="pill-clip-1"><rect x="455" y="170" width="160" height="8" rx="4" ry="4" /></clipPath>
+<g clip-path="url(#pill-clip-1)">
+<rect x="455" y="170" width="160" height="8" fill="#ebecf0" />
+<rect x="455.0" y="170" width="53.333333333333336" height="8" fill="#238636" />
+<line x1="508.3333333333333" y1="170" x2="508.3333333333333" y2="178" stroke="#ffffff" stroke-width="1.5" />
+<rect x="508.3333333333333" y="170" width="53.333333333333336" height="8" fill="#238636" />
+<line x1="561.6666666666666" y1="170" x2="561.6666666666666" y2="178" stroke="#ffffff" stroke-width="1.5" />
+<rect x="561.6666666666666" y="170" width="53.333333333333336" height="8" fill="#238636" />
+</g>
+<text x="615" y="160" class="text wf-meta" fill="#238636">SUCCESS (37s)</text>
 <rect x="20" y="200" width="610" height="55" class="card" />
 <circle cx="35" cy="225" r="6" fill="#238636" />
 <text x="50" y="225" class="text wf-name">02 - Test Commit Trigger</text>
