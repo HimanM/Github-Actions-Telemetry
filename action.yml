@@ -26,6 +26,10 @@ inputs:
   api_key:
     description: 'Optional Auth Bearer token/key for the API Upload'
     required: false
+  generate_svg_report:
+    description: 'Generate an SVG visual report from the metrics (true or false, default is false)'
+    required: false
+    default: 'false'
 runs:
   using: "composite"
   steps:
@@ -39,6 +43,7 @@ runs:
       run: pip install requests
       
     - name: Run Telemetry Observer
+      id: observer
       shell: bash
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
@@ -56,3 +61,13 @@ runs:
         if [ -n "$API_URL" ]; then echo "::add-mask::$API_URL"; fi
         if [ -n "$API_KEY" ]; then echo "::add-mask::$API_KEY"; fi
         python ${{ github.action_path }}/scripts/observer.py
+
+    - name: Generate SVG Report
+      if: ${{ inputs.generate_svg_report == 'true' || inputs.generate_svg_report == 'yes' }}
+      shell: bash
+      env:
+        JSON_PATH: ${{ steps.observer.outputs.json_path }}
+        OUTPUT_SVG: workflow_status.svg
+      run: |
+        echo "Generating SVG report using generate_svg.py..."
+        python ${{ github.action_path }}/scripts/generate_svg.py

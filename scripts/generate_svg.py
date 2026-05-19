@@ -4,8 +4,9 @@ import glob
 import sys
 from datetime import datetime
 
-INPUT_DIR = "test_jsons"
-OUTPUT_FILE = "test_jsons/workflow_status.svg"
+# Read IO paths from environment or fallback to old defaults for testing
+JSON_PATH = os.environ.get("JSON_PATH")
+OUTPUT_SVG = os.environ.get("OUTPUT_SVG", "workflow_status.svg")
 
 def get_status_color(status):
     if status == "success":
@@ -37,14 +38,14 @@ def generate_svg(json_path, output_path):
     svg = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{total_height}" viewBox="0 0 {width} {total_height}">',
         f'<style>',
-        f'  .bg {{ fill: #0d1117; }}',
-        f'  .card {{ fill: #161b22; stroke: #30363d; stroke-width: 1px; rx: 6px; }}',
-        f'  .text {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; fill: #c9d1d9; }}',
-        f'  .title {{ font-size: 20px; font-weight: 600; fill: #ffffff; }}',
-        f'  .subtitle {{ font-size: 13px; fill: #8b949e; }}',
+        f'  .bg {{ fill: #ffffff; }}',
+        f'  .card {{ fill: #f6f8fa; stroke: #d0d7de; stroke-width: 1px; rx: 6px; }}',
+        f'  .text {{ font-family: "Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; fill: #24292f; }}',
+        f'  .title {{ font-size: 20px; font-weight: 600; fill: #000000; }}',
+        f'  .subtitle {{ font-size: 13px; fill: #57606a; }}',
         f'  .wf-name {{ font-size: 14px; font-weight: 500; }}',
         f'  .wf-meta {{ font-size: 13px; font-weight: 600; text-anchor: end; }}',
-        f'  .timestamp {{ font-size: 11px; fill: #8b949e; }}',
+        f'  .timestamp {{ font-size: 11px; fill: #57606a; }}',
         f'</style>',
         f'<rect class="bg" width="{width}" height="{total_height}" rx="10" ry="10"/>',
         
@@ -113,7 +114,7 @@ def generate_svg(json_path, output_path):
             svg.append(f'<g clip-path="url(#{clip_id})">')
             
             # Base background for safety in case of math rounding
-            svg.append(f'<rect x="{pill_x}" y="{pill_y}" width="{pill_width}" height="{pill_height}" fill="#30363d" />')
+            svg.append(f'<rect x="{pill_x}" y="{pill_y}" width="{pill_width}" height="{pill_height}" fill="#ebecf0" />')
             
             for i, step in enumerate(steps):
                 step_conc = step.get("conclusion", step.get("status", ""))
@@ -123,12 +124,12 @@ def generate_svg(json_path, output_path):
                 
                 # Add gap line between steps if there's more than 1
                 if i < len(steps) - 1:
-                    svg.append(f'<line x1="{s_x + step_width}" y1="{pill_y}" x2="{s_x + step_width}" y2="{pill_y + pill_height}" stroke="#0d1117" stroke-width="1.5" />')
+                    svg.append(f'<line x1="{s_x + step_width}" y1="{pill_y}" x2="{s_x + step_width}" y2="{pill_y + pill_height}" stroke="#ffffff" stroke-width="1.5" />')
             
             svg.append('</g>')
         else:
             # Solid color pill for historical runs with no granular steps
-            pill_color = "#30363d" if status == "not run" else get_status_color(status)
+            pill_color = "#ebecf0" if status == "not run" else get_status_color(status)
             svg.append(f'<rect x="{pill_x}" y="{pill_y}" width="{pill_width}" height="{pill_height}" rx="4" ry="4" fill="{pill_color}" />')
 
         # Status and Time (placed upper right)
@@ -144,18 +145,24 @@ def generate_svg(json_path, output_path):
     print(f"Successfully generated SVG at: {output_path}")
 
 def main():
-    if not os.path.exists(INPUT_DIR):
-        print(f"Directory {INPUT_DIR} does not exist.")
-        sys.exit(1)
+    if JSON_PATH and os.path.exists(JSON_PATH):
+        target_json = JSON_PATH
+    else:
+        # Fallback for local testing if env vars aren't set
+        input_dir = "test_jsons"
+        if not os.path.exists(input_dir):
+            print(f"Directory {input_dir} does not exist and JSON_PATH not set.")
+            sys.exit(1)
 
-    # Automatically find the most recent JSON file in the directory
-    json_files = glob.glob(os.path.join(INPUT_DIR, "*.json"))
-    if not json_files:
-        print(f"No JSON files found in {INPUT_DIR}.")
-        sys.exit(1)
+        # Automatically find the most recent JSON file in the directory
+        json_files = glob.glob(os.path.join(input_dir, "*.json"))
+        if not json_files:
+            print(f"No JSON files found in {input_dir}.")
+            sys.exit(1)
+            
+        target_json = max(json_files, key=os.path.getctime)
         
-    latest_file = max(json_files, key=os.path.getctime)
-    generate_svg(latest_file, OUTPUT_FILE)
+    generate_svg(target_json, OUTPUT_SVG)
 
 if __name__ == "__main__":
     main()

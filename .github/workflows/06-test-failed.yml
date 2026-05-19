@@ -1,0 +1,18 @@
+name: Intentional Failure (for testing)
+
+on:
+  push: {}
+  pull_request: {}
+
+jobs:
+  fail:
+    name: Intentional failing job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show message then fail
+        run: |
+          echo "This job is intentionally failing for test purposes."
+          exit 1

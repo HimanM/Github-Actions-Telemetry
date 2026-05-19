@@ -281,6 +281,11 @@ def main():
         
     print(f"Telemetry saved successfully to {out_path}")
     
+    github_output = os.environ.get("GITHUB_OUTPUT")
+    if github_output:
+        with open(github_output, "a") as f:
+            f.write(f"json_path={out_path}\n")
+    
     # 8. External API Upload (Optional)
     if EXTERNAL_API_URL:
         print("Uploading telemetry to external API...")
