@@ -26,8 +26,8 @@ NON_TERMINAL_STATES = ["queued", "waiting", "requested", "pending", "in_progress
 MAX_TIMEOUT_SECONDS = int(os.environ.get("MAX_TIMEOUT", "3600"))
 POLL_INTERVAL = int(os.environ.get("POLL_INTERVAL", "15"))
 
-EXTERNAL_API_URL = os.environ.get("API_URL")
-EXTERNAL_API_KEY = os.environ.get("API_KEY")
+EXTERNAL_API_URL = (os.environ.get("API_URL") or "").strip()
+EXTERNAL_API_KEY = (os.environ.get("API_KEY") or "").strip()
 
 # --- Utils ---
 def get_paged(url, params=None):
@@ -287,6 +287,8 @@ def main():
             f.write(f"json_path={out_path}\n")
     
     # 8. External API Upload (Optional)
+    if not EXTERNAL_API_URL:
+        print("No API_URL configured. Skipping external API upload.")
     if EXTERNAL_API_URL:
         print("Uploading telemetry to external API...")
         upload_headers = {"Content-Type": "application/json"}
