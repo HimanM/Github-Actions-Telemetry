@@ -1,4 +1,4 @@
-name: Intentional Failure (for testing)
+name: 06 - Intentional Failure (for testing)
 
 on:
   push: {}
