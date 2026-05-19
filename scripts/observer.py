@@ -74,12 +74,48 @@ def get_run_duration(started_at, completed_at):
     except Exception:
         return None
 
+def cleanup_duplicate_observers():
+    clean_env = os.environ.get("CLEAN_CONCURRENT_RUNS", "false").lower()
+    if clean_env not in ["true", "1", "yes"]:
+        return
+
+    run_id = os.environ.get("GITHUB_RUN_ID")
+    workflow_name = os.environ.get("GITHUB_WORKFLOW")
+    
+    if not run_id or not workflow_name:
+        return
+        
+    print("Checking for cancelled/skipped duplicate observer runs to clean up...")
+    try:
+        runs = get_paged(f"{API_BASE}/repos/{REPO}/actions/runs", params={"head_sha": SHA})
+    except Exception as e:
+        print(f"Failed to fetch runs for cleanup: {e}")
+        return
+        
+    deleted = 0
+    for r in runs:
+        if r.get("name") == workflow_name and str(r.get("id")) != str(run_id):
+            if r.get("status") == "completed" and r.get("conclusion") in ["cancelled", "skipped"]:
+                del_url = f"{API_BASE}/repos/{REPO}/actions/runs/{r['id']}"
+                print(f"Deleting duplicate cancelled/skipped observer run {r['id']}...")
+                try:
+                    resp = requests.delete(del_url, headers=HEADERS)
+                    if resp.status_code == 204:
+                        deleted += 1
+                except Exception as e:
+                    print(f"Failed to delete {r['id']}: {e}")
+                    
+    if deleted > 0:
+        print(f"Successfully cleaned up {deleted} duplicate observer runs.")
+
 # --- Main Logic ---
 
 def main():
     if not all([TOKEN, REPO, SHA]):
         print("Missing required environment variables.")
         sys.exit(1)
+        
+    cleanup_duplicate_observers()
 
     print(f"Observer started for {REPO} @ {SHA}")
     observer_started_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")

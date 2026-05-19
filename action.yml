@@ -30,6 +30,10 @@ inputs:
     description: 'Generate an SVG visual report from the metrics (true or false, default is false)'
     required: false
     default: 'false'
+  clean_concurrent_runs:
+    description: 'Delete older skipped/cancelled concurrent observer runs for the same commit (true or false, default is false)'
+    required: false
+    default: 'false'
 runs:
   using: "composite"
   steps:
@@ -57,12 +61,15 @@ runs:
         GITHUB_SHA: ${{ github.sha }}
         GITHUB_REF_NAME: ${{ github.ref_name }}
         GITHUB_EVENT_NAME: ${{ github.event_name }}
+        GITHUB_RUN_ID: ${{ github.run_id }}
+        GITHUB_WORKFLOW: ${{ github.workflow }}
         INITIAL_DELAY: ${{ inputs.initial_delay }}
         MAX_TIMEOUT: ${{ inputs.max_timeout }}
         POLL_INTERVAL: ${{ inputs.poll_interval }}
         IGNORED_WORKFLOWS: ${{ inputs.ignored_workflows }}
         API_URL: ${{ inputs.api_url }}
         API_KEY: ${{ inputs.api_key }}
+        CLEAN_CONCURRENT_RUNS: ${{ inputs.clean_concurrent_runs }}
       run: |
         python ${{ github.action_path }}/scripts/observer.py
 
