@@ -1,5 +1,8 @@
 # GitHub Actions Centralized Telemetry Observer
 
+<!-- telemetry-svg-start -->
+<!-- telemetry-svg-end -->
+
 This repository implements a Centralized Workflow Telemetry Collector (Observer) designed to securely monitor and measure all workflow activity tied to a specific Commit SHA, without interfering directly with the workloads being monitored.
 
 Per the MVP design, this pattern removes the need to embed telemetry logic directly inside other workflow files. Instead, the centralized observer automatically initializes, discovers what is executing, waits for all executions to finish, and extracts their structural telemetry (including durations, job steps, and event metadata).
@@ -22,28 +25,82 @@ Per the MVP design, this pattern removes the need to embed telemetry logic direc
 
 ### Integrating into other Repositories
 
-Because the inner workings of the Python polling logic are tightly wrapped in a single composite action, utilizing this from any arbitrary repository is incredibly simple. All you need is the token, and you can optionally override various configurations.
+Because the core polling and visualization logic is tightly wrapped inside a Composite Action (`action.yml`), integrating this into *any* other GitHub repository is incredibly simple. Other users do not need to clone this repository; they only need to reference it directly using the `uses:` syntax.
+
+Here is a complete usage example to drop into any external repository:
 
 ```yaml
+name: Global Telemetry Observer
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  actions: read   # Required to read workflow run statuses
+  contents: write # Required to grab commit metadata and auto-commit the SVG
+
 jobs:
   telemetry:
     runs-on: ubuntu-latest
     steps:
-      # Use the centralized observer directly from this repository
       - name: Observer Telemetry Agent
         uses: HimanM/Github-Actions-Telemetry@main
         with:
+          # Required: GitHub Token to securely authenticate with GitHub's REST API
           github_token: ${{ secrets.GITHUB_TOKEN }}
           
-          # Optional inputs and their default values:
-          initial_delay: '60'               # Wait 60s before tracking starts
-          max_timeout: '3600'               # Global timeout in seconds (1 hour)
-          poll_interval: '15'               # Seconds between API polls
-          ignored_workflows: 'Observer,CodeQL,Dependabot'
+          # Optional Configuration (Defaults shown below)
+          initial_delay: '60'               # Wait 60s before tracking starts to allow other jobs to queue
+          max_timeout: '3600'               # Global timeout in seconds (1 hour) before giving up
+          poll_interval: '15'               # Seconds between API polls for live jobs
+          ignored_workflows: 'Observer,CodeQL,Dependabot' # Comma-separated list to prevent recursion
           
-          # Telemetry export
+          # Optional: External webhook export
           # api_url: 'https://api.yourdomain.com/v1/telemetry'
           # api_key: ${{ secrets.TELEMETRY_API_KEY }}
+
+          # Optional: Generate a visual SVG timeline report (Default: false)
+          # generate_svg_report: 'true'
+
+      # By default, the Action generates a comprehensive JSON payload.
+      # You can upload this JSON data as an artifact to review the raw metrics.
+      - name: Upload JSON Telemetry Data
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: telemetry-test-jsons
+          # The Action exposes the exact generated JSON path for you!
+          path: ${{ steps.observer.outputs.json_path }}
+
+      # (Optional) If you set `generate_svg_report: 'true'` above, 
+      # the Action also outputs the path to the SVG diagram so you can upload it!
+      # - name: Upload SVG Timeline Report
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: workflow-svg-report
+      #     path: ${{ steps.observer.outputs.svg_path || 'workflow_status.svg' }}
+      
+      # (Optional) Auto-Commit the SVG directly into your Repository and embed in README!
+      # Remember to add `<!-- telemetry-svg-start -->` to your README.md where you want the graph to appear.
+      # - name: Auto-Commit SVG to Repository
+      #   if: success()
+      #   run: |
+      #     if [ -f "${{ steps.observer.outputs.svg_path || 'workflow_status.svg' }}" ]; then
+      #       # Inject the SVG link into README.md only inside the placeholder comments to avoid false-positives
+      #       SVG_ALREADY_INJECTED=\$(awk '/<!-- telemetry-svg-start -->/{found=1} found && /!\\[Workflow Timeline\\]/{print "yes"; exit} /<!-- telemetry-svg-end -->/{found=0}' README.md)
+      #       if [ "\$SVG_ALREADY_INJECTED" != "yes" ]; then
+      #         sed -i '/<!-- telemetry-svg-start -->/a ![Workflow Timeline](workflow_status.svg)' README.md
+      #       fi
+      #       git config --global user.name "github-actions[bot]"
+      #       git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      #       git add workflow_status.svg README.md
+      #       if ! git diff --staged --quiet; then
+      #         git commit -m "docs: Auto-update workflow telemetry SVG timeline"
+      #         git push
+      #       fi
+      #     fi
 ```
 
 ## Triggering on Manual Workflows
@@ -73,6 +130,7 @@ To ensure coverage, synthetic test workflows have been scaffolded to mimic activ
 - `03 - Test Long Running` (Simulates heavy load taking 30+ seconds)
 - `04 - Test Upstream Dependent`
 - `05 - Test Downstream Dependent` (Only executes when 04 finishes successfully)
+- `06 - Test Failed Action`
 
 ## Data Fields Output
 

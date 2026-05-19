@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="650" height="480" viewBox="0 0 650 480">
+<style>
+  .bg { fill: #ffffff; }
+  .card { fill: #f6f8fa; stroke: #d0d7de; stroke-width: 1px; rx: 6px; }
+  .text { font-family: "Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; fill: #24292f; }
+  .title { font-size: 20px; font-weight: 600; fill: #000000; }
+  .subtitle { font-size: 13px; fill: #57606a; }
+  .wf-name { font-size: 14px; font-weight: 500; }
+  .wf-meta { font-size: 13px; font-weight: 600; text-anchor: end; }
+  .timestamp { font-size: 11px; fill: #57606a; }
+</style>
+<rect class="bg" width="650" height="480" rx="10" ry="10"/>
+<text x="25" y="35" class="text title">Workflow Execution Report</text>
+<text x="25" y="55" class="text subtitle">Commit: 0b7d8bd • Triggered: 2026-05-19 04:34:24</text>
+<rect x="20" y="70" width="610" height="55" class="card" />
+<circle cx="35" cy="95" r="6" fill="#238636" />
+<text x="50" y="95" class="text wf-name">02 - Test Commit Trigger</text>
+<text x="50" y="112" class="text timestamp">2026-05-19 04:34:14 • trigger: push</text>
+<clipPath id="pill-clip-0"><rect x="455" y="105" width="160" height="8" rx="4" ry="4" /></clipPath>
+<g clip-path="url(#pill-clip-0)">
+<rect x="455" y="105" width="160" height="8" fill="#ebecf0" />
+<rect x="455.0" y="105" width="53.333333333333336" height="8" fill="#238636" />
+<line x1="508.3333333333333" y1="105" x2="508.3333333333333" y2="113" stroke="#ffffff" stroke-width="1.5" />
+<rect x="508.3333333333333" y="105" width="53.333333333333336" height="8" fill="#238636" />
+<line x1="561.6666666666666" y1="105" x2="561.6666666666666" y2="113" stroke="#ffffff" stroke-width="1.5" />
+<rect x="561.6666666666666" y="105" width="53.333333333333336" height="8" fill="#238636" />
+</g>
+<text x="615" y="95" class="text wf-meta" fill="#238636">SUCCESS (5s)</text>
+<rect x="20" y="135" width="610" height="55" class="card" />
+<circle cx="35" cy="160" r="6" fill="#238636" />
+<text x="50" y="160" class="text wf-name">03 - Test Long Running</text>
+<text x="50" y="177" class="text timestamp">2026-05-19 04:34:14 • trigger: push</text>
+<clipPath id="pill-clip-1"><rect x="455" y="170" width="160" height="8" rx="4" ry="4" /></clipPath>
+<g clip-path="url(#pill-clip-1)">
+<rect x="455" y="170" width="160" height="8" fill="#ebecf0" />
+<rect x="455.0" y="170" width="53.333333333333336" height="8" fill="#238636" />
+<line x1="508.3333333333333" y1="170" x2="508.3333333333333" y2="178" stroke="#ffffff" stroke-width="1.5" />
+<rect x="508.3333333333333" y="170" width="53.333333333333336" height="8" fill="#238636" />
+<line x1="561.6666666666666" y1="170" x2="561.6666666666666" y2="178" stroke="#ffffff" stroke-width="1.5" />
+<rect x="561.6666666666666" y="170" width="53.333333333333336" height="8" fill="#238636" />
+</g>
+<text x="615" y="160" class="text wf-meta" fill="#238636">SUCCESS (36s)</text>
+<rect x="20" y="200" width="610" height="55" class="card" />
+<circle cx="35" cy="225" r="6" fill="#238636" />
+<text x="50" y="225" class="text wf-name">04 - Test Upstream Dependent</text>
+<text x="50" y="242" class="text timestamp">2026-05-19 04:34:14 • trigger: push</text>
+<clipPath id="pill-clip-2"><rect x="455" y="235" width="160" height="8" rx="4" ry="4" /></clipPath>
+<g clip-path="url(#pill-clip-2)">
+<rect x="455" y="235" width="160" height="8" fill="#ebecf0" />
+<rect x="455.0" y="235" width="53.333333333333336" height="8" fill="#238636" />
+<line x1="508.3333333333333" y1="235" x2="508.3333333333333" y2="243" stroke="#ffffff" stroke-width="1.5" />
+<rect x="508.3333333333333" y="235" width="53.333333333333336" height="8" fill="#238636" />
+<line x1="561.6666666666666" y1="235" x2="561.6666666666666" y2="243" stroke="#ffffff" stroke-width="1.5" />
+<rect x="561.6666666666666" y="235" width="53.333333333333336" height="8" fill="#238636" />
+</g>
+<text x="615" y="225" class="text wf-meta" fill="#238636">SUCCESS (28s)</text>
+<rect x="20" y="265" width="610" height="55" class="card" />
+<circle cx="35" cy="290" r="6" fill="#da3633" />
+<text x="50" y="290" class="text wf-name">Intentional Failure (for testing)</text>
+<text x="50" y="307" class="text timestamp">2026-05-19 04:34:14 • trigger: push</text>
+<clipPath id="pill-clip-3"><rect x="455" y="300" width="160" height="8" rx="4" ry="4" /></clipPath>
+<g clip-path="url(#pill-clip-3)">
+<rect x="455" y="300" width="160" height="8" fill="#ebecf0" />
+<rect x="455.0" y="300" width="32.0" height="8" fill="#238636" />
+<line x1="487.0" y1="300" x2="487.0" y2="308" stroke="#ffffff" stroke-width="1.5" />
+<rect x="487.0" y="300" width="32.0" height="8" fill="#238636" />
+<line x1="519.0" y1="300" x2="519.0" y2="308" stroke="#ffffff" stroke-width="1.5" />
+<rect x="519.0" y="300" width="32.0" height="8" fill="#da3633" />
+<line x1="551.0" y1="300" x2="551.0" y2="308" stroke="#ffffff" stroke-width="1.5" />
+<rect x="551.0" y="300" width="32.0" height="8" fill="#238636" />
+<line x1="583.0" y1="300" x2="583.0" y2="308" stroke="#ffffff" stroke-width="1.5" />
+<rect x="583.0" y="300" width="32.0" height="8" fill="#238636" />
+</g>
+<text x="615" y="290" class="text wf-meta" fill="#da3633">FAILURE (9s)</text>
+<rect x="20" y="330" width="610" height="55" class="card" />
+<circle cx="35" cy="355" r="6" fill="#238636" />
+<text x="50" y="355" class="text wf-name">01 - Test Manual Trigger</text>
+<text x="50" y="372" class="text timestamp">2026-05-19 02:31:42 • prev trigger: workflow_dispatch</text>
+<rect x="455" y="365" width="160" height="8" rx="4" ry="4" fill="#238636" />
+<text x="615" y="355" class="text wf-meta" fill="#238636">SUCCESS (Last: 6s)</text>
+<rect x="20" y="395" width="610" height="55" class="card" />
+<circle cx="35" cy="420" r="6" fill="#238636" />
+<text x="50" y="420" class="text wf-name">05 - Test Downstream Dependent</text>
+<text x="50" y="437" class="text timestamp">2026-05-19 04:34:44 • prev trigger: workflow_run</text>
+<rect x="455" y="430" width="160" height="8" rx="4" ry="4" fill="#238636" />
+<text x="615" y="420" class="text wf-meta" fill="#238636">SUCCESS (Last: 6s)</text>
+</svg>

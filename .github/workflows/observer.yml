@@ -1,5 +1,6 @@
 name: Observer
 
+# --- Trigger Configuration ---
 on:
   push:
   pull_request:
@@ -14,21 +15,27 @@ on:
     types:
       - requested
 
+# --- Concurrency Control ---
+# Ensures only one observer runs per commit SHA to prevent duplicate polling or race conditions.
 concurrency:
   group: observer-${{ github.sha }}
   cancel-in-progress: true
 
+# --- Required Permissions ---
 permissions:
   actions: read
-  contents: read
+  contents: write # Upgraded to 'write' to allow committing the SVG back to the repo
 
+# --- Core Telemetry Job ---
 jobs:
   telemetry:
     runs-on: ubuntu-latest
     steps:
+      # 1. Checkout the repository to access local action scripts
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2. Run the Telemetry Observer Action
       - name: Run Telemetry Observer Action
         uses: ./
         with:
@@ -37,12 +44,64 @@ jobs:
           max_timeout: '3600'
           poll_interval: '15'
           ignored_workflows: 'Observer,CodeQL,Dependabot'
-          # api_url: 'https://api.yourdomain.com/telemetry'
-          # api_key: ${{ secrets.TELEMETRY_API_KEY }}
-        
+          #---------------------------------------------------------
+          # Comment this fucking 2 lines out if you don't want to test the API upload and secret masking features. 
+          # The API URL is set to httpbin.org for testing, which will simply return the posted data in the response. 
+          # The API key is a dummy value to demonstrate secret masking in logs.
+          api_url: 'https://httpbin.org/post' # Testing API payload upload
+          api_key: 'test_secret_api_key_123'  # Testing secret masking
+          #---------------------------------------------------------
+          generate_svg_report: 'true'
+
+      # 3. Upload the generated JSON payload as a workflow artifact
       - name: Upload Telemetry Data
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: telemetry-test-jsons
           path: test_jsons/
+          
+      # 4. Upload the generated SVG diagram as a separate workflow artifact
+      - name: Upload SVG Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workflow-svg-report
+          path: workflow_status.svg
+          
+      # --- Auto-Commit SVG Feature (Optional) ---
+      # This step automatically commits the generated workflow_status.svg file to the repository 
+      # and injects it into the README.md so it displays cleanly in your project.
+      - name: Auto-Commit SVG to Repository
+        if: success()
+        run: |
+          if [ -f "workflow_status.svg" ]; then
+            # 1. Inject the SVG link into README.md if it doesn't already exist
+            # We check ONLY inside the telemetry-svg-start/end block to avoid matching
+            # the documented example elsewhere in the README.
+            SVG_ALREADY_INJECTED=$(awk '/<!-- telemetry-svg-start -->/{found=1} found && /!\[Workflow Timeline\]/{print "yes"; exit} /<!-- telemetry-svg-end -->/{found=0}' README.md)
+            
+            if [ "$SVG_ALREADY_INJECTED" != "yes" ]; then
+              echo "Injecting SVG markdown into README.md"
+              sed -i '/<!-- telemetry-svg-start -->/a ![Workflow Timeline](workflow_status.svg)' README.md
+            else
+              echo "SVG link already present in README.md placeholder block. Skipping injection."
+            fi
+            
+            # 2. Configure Git bot identity
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            
+            # 3. Stage the files
+            git add workflow_status.svg README.md
+            
+            # 4. Check if there are actual diffs to commit
+            if ! git diff --staged --quiet; then
+              git commit -m "docs: Auto-update workflow telemetry SVG timeline"
+              git push
+            else
+              echo "No visual changes in the SVG. Skipping commit."
+            fi
+          else
+            echo "No workflow_status.svg found, skipping document update."
+          fi
