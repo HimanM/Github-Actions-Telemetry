@@ -8,7 +8,7 @@ on:
   # Automatically triggers the Observer if specific workflows are fired manually (workflow_dispatch)
   # You must maintain this list with the names of any workflows you want to monitor manually.
   workflow_run:
-    workflows: 
+    workflows:
       - "01 - Test Manual Trigger"
       - "03 - Test Long Running"
       - "04 - Test Upstream Dependent"
@@ -40,18 +40,13 @@ jobs:
         uses: ./
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          initial_delay: '60'
-          max_timeout: '3600'
-          poll_interval: '15'
-          ignored_workflows: 'Observer,CodeQL,Dependabot'
-          #---------------------------------------------------------
-          # Comment this fucking 2 lines out if you don't want to test the API upload and secret masking features. 
-          # The API URL is set to httpbin.org for testing, which will simply return the posted data in the response. 
-          # The API key is a dummy value to demonstrate secret masking in logs.
-          api_url: 'https://httpbin.org/post' # Testing API payload upload
-          api_key: 'test_secret_api_key_123'  # Testing secret masking
-          #---------------------------------------------------------
-          generate_svg_report: 'true'
+          initial_delay: "60"
+          max_timeout: "3600"
+          poll_interval: "15"
+          ignored_workflows: "Observer,CodeQL,Dependabot"
+          # api_url: ${{ secrets.API_URL }}
+          # api_key: ${{ secrets.API_KEY }}
+          generate_svg_report: "true"
 
       # 3. Upload the generated JSON payload as a workflow artifact
       - name: Upload Telemetry Data
@@ -60,7 +55,7 @@ jobs:
         with:
           name: telemetry-test-jsons
           path: test_jsons/
-          
+
       # 4. Upload the generated SVG diagram as a separate workflow artifact
       - name: Upload SVG Report
         if: always()
@@ -68,9 +63,9 @@ jobs:
         with:
           name: workflow-svg-report
           path: workflow_status.svg
-          
+
       # --- Auto-Commit SVG Feature (Optional) ---
-      # This step automatically commits the generated workflow_status.svg file to the repository 
+      # This step automatically commits the generated workflow_status.svg file to the repository
       # and injects it into the README.md so it displays cleanly in your project.
       - name: Auto-Commit SVG to Repository
         if: success()
