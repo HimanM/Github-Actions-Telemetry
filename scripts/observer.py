@@ -200,12 +200,35 @@ def main():
                 "ran": True
             })
         else:
+            last_run_info = None
+            try:
+                lr_resp = requests.get(f"{API_BASE}/repos/{REPO}/actions/workflows/{wf_id}/runs", headers=HEADERS, params={"per_page": 1})
+                if lr_resp.status_code == 200:
+                    runs_list = lr_resp.json().get("workflow_runs", [])
+                    if runs_list:
+                        lr = runs_list[0]
+                        last_run_info = {
+                            "run_id": lr.get("id"),
+                            "run_number": lr.get("run_number"),
+                            "head_sha": lr.get("head_sha"),
+                            "status": lr.get("status"),
+                            "conclusion": lr.get("conclusion"),
+                            "created_at": lr.get("created_at"),
+                            "started_at": lr.get("run_started_at"),
+                            "completed_at": lr.get("updated_at"),
+                            "duration_seconds": get_run_duration(lr.get("run_started_at", ""), lr.get("updated_at", "")),
+                            "html_url": lr.get("html_url")
+                        }
+            except Exception as e:
+                print(f"Warning: Failed to fetch last run for workflow {wf_id}: {e}")
+
             workflows_not_triggered.append({
                 "workflow_id": wf_id,
                 "workflow_name": wf["name"],
                 "head_sha": SHA,
                 "exists": True,
-                "ran": False
+                "ran": False,
+                "last_run": last_run_info
             })
 
     # 6. Fetch Commit Metadata
