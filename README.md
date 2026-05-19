@@ -1,6 +1,7 @@
 # GitHub Actions Centralized Telemetry Observer
 
 <!-- telemetry-svg-start -->
+![Workflow Timeline](workflow_status.svg)
 <!-- telemetry-svg-end -->
 
 This repository implements a Centralized Workflow Telemetry Collector (Observer) designed to securely monitor and measure all workflow activity tied to a specific Commit SHA, without interfering directly with the workloads being monitored.
@@ -84,6 +85,7 @@ jobs:
       
       # (Optional) Auto-Commit the SVG directly into your Repository and embed in README!
       # Remember to add `<!-- telemetry-svg-start -->` to your README.md where you want the graph to appear.
+![Workflow Timeline](workflow_status.svg)
       # - name: Auto-Commit SVG to Repository
       #   if: success()
       #   run: |
@@ -91,6 +93,7 @@ jobs:
       #       # Inject the SVG link into README.md only if it's not already in the first 15 lines (avoids false-positives)
       #       if ! head -n 15 README.md | grep -q '!\[Workflow Timeline\]'; then
       #         sed -i '/<!-- telemetry-svg-start -->/a ![Workflow Timeline](workflow_status.svg)' README.md
+![Workflow Timeline](workflow_status.svg)
       #       fi
       #       git config --global user.name "github-actions[bot]"
       #       git config --global user.email "github-actions[bot]@users.noreply.github.com"
