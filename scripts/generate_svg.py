@@ -25,7 +25,7 @@ def generate_svg(json_path, output_path):
     workflows = data.get("workflows", [])
     
     # Calculate dynamic height
-    width = 650
+    width = 880
     row_height = 65 # Increased to fit the new timestamp and pill design
     header_height = 70
     padding = 20
@@ -36,7 +36,7 @@ def generate_svg(json_path, output_path):
     display_date = data.get("observer_started_at", datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"))
     
     svg = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{total_height}" viewBox="0 0 {width} {total_height}">',
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 {width} {total_height}">',
         f'<style>',
         f'  .bg {{ fill: #ffffff; }}',
         f'  .card {{ fill: #f6f8fa; stroke: #d0d7de; stroke-width: 1px; rx: 6px; }}',
