@@ -63,7 +63,7 @@ runs:
         python ${{ github.action_path }}/scripts/observer.py
 
     - name: Generate SVG Report
-      if: ${{ inputs.generate_svg_report == 'true' || inputs.generate_svg_report == 'yes' || inputs.generate_svg_report == '1' }}
+      if: inputs.generate_svg_report == 'true' || inputs.generate_svg_report == true || inputs.generate_svg_report == 'yes' || inputs.generate_svg_report == '1'
       shell: bash
       env:
         JSON_PATH: ${{ steps.observer.outputs.json_path }}
