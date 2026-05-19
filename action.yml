@@ -1,5 +1,8 @@
 name: 'GitHub Actions Telemetry Observer'
 description: 'Centralized telemetry observer for GitHub Actions that monitors and exports execution metrics.'
+branding:
+  icon: 'activity'
+  color: 'blue'
 inputs:
   github_token:
     description: 'GitHub token for API access'
