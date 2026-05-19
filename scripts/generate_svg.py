@@ -66,6 +66,8 @@ def generate_svg(json_path, output_path):
             duration = wf.get("duration_seconds", 0)
             time_str = f"{duration}s"
             timestamp = wf.get("started_at", "Unknown").replace("T", " ").replace("Z", "")
+            event_type = wf.get("event", "unknown")
+            timestamp_desc = f"{timestamp} • trigger: {event_type}"
             
             for j in wf.get("jobs", []):
                 for s in j.get("steps", []):
@@ -76,11 +78,13 @@ def generate_svg(json_path, output_path):
                 status = last_run.get("conclusion", "skipped/not run")
                 time_str = f"Last: {last_run.get('duration_seconds', 0)}s"
                 timestamp = last_run.get("started_at", "Unknown").replace("T", " ").replace("Z", "")
+                event_type = last_run.get("event", "historical")
+                timestamp_desc = f"{timestamp} • prev trigger: {event_type}"
                 # We typically don't have historical steps for non-triggered runs in our simple JSON payload
             else:
                 status = "not run"
                 time_str = "N/A"
-                timestamp = "No history"
+                timestamp_desc = "No history"
 
         color = get_status_color(status)
         
@@ -92,7 +96,7 @@ def generate_svg(json_path, output_path):
         
         # Workflow Name and Timestamp underneath
         svg.append(f'<text x="50" y="{y_offset + 25}" class="text wf-name">{name}</text>')
-        svg.append(f'<text x="50" y="{y_offset + 42}" class="text timestamp">{timestamp}</text>')
+        svg.append(f'<text x="50" y="{y_offset + 42}" class="text timestamp">{timestamp_desc}</text>')
         
         # Step visualization 'Pill'
         pill_width = 160
