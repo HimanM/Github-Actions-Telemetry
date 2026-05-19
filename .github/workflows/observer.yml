@@ -9,6 +9,10 @@ concurrency:
   group: observer-${{ github.sha }}
   cancel-in-progress: false
 
+permissions:
+  actions: read
+  contents: read
+
 jobs:
   telemetry:
     runs-on: ubuntu-latest
