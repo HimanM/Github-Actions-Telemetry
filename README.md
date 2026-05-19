@@ -57,18 +57,27 @@ jobs:
           # api_url: 'https://api.yourdomain.com/v1/telemetry'
           # api_key: ${{ secrets.TELEMETRY_API_KEY }}
 
-          # Optional: Generate a visual SVG timeline report 
-          generate_svg_report: 'true'
+          # Optional: Generate a visual SVG timeline report (Default: false)
+          # generate_svg_report: 'true'
 
-      # The Action automatically outputs the path to the SVG diagram
-      # We can upload it as an artifact so it can be viewed!
-      - name: Upload SVG Timeline Report
+      # By default, the Action generates a comprehensive JSON payload.
+      # You can upload this JSON data as an artifact to review the raw metrics.
+      - name: Upload JSON Telemetry Data
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: workflow-svg-report
-          # Retrieve the automatically exposed SVG path from the observer step
-          path: ${{ steps.observer.outputs.svg_path || 'workflow_status.svg' }}
+          name: telemetry-test-jsons
+          # The Action exposes the exact generated JSON path for you!
+          path: ${{ steps.observer.outputs.json_path }}
+
+      # (Optional) If you set `generate_svg_report: 'true'` above, 
+      # the Action also outputs the path to the SVG diagram so you can upload it!
+      # - name: Upload SVG Timeline Report
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: workflow-svg-report
+      #     path: ${{ steps.observer.outputs.svg_path || 'workflow_status.svg' }}
 ```
 
 ## Triggering on Manual Workflows
