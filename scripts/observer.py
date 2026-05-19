@@ -210,6 +210,7 @@ def main():
                         last_run_info = {
                             "run_id": lr.get("id"),
                             "run_number": lr.get("run_number"),
+                            "event": lr.get("event"),
                             "head_sha": lr.get("head_sha"),
                             "status": lr.get("status"),
                             "conclusion": lr.get("conclusion"),
