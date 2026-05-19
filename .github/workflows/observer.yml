@@ -47,6 +47,9 @@ jobs:
           # api_url: ${{ secrets.API_URL }}
           # api_key: ${{ secrets.API_KEY }}
           generate_svg_report: "true"
+          
+          # Automatically delete older cancelled/skipped observer runs for this commit to keep Actions UI clean
+          clean_concurrent_runs: "true"
 
       # 3. Upload the generated JSON payload as a workflow artifact
       - name: Upload Telemetry Data

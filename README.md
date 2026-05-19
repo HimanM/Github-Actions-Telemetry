@@ -154,6 +154,7 @@ The action accepts the following inputs:
 | `api_url` | No | N/A | Optional URL to POST the JSON payload to. |
 | `api_key` | No | N/A | Optional Auth Bearer token/key for the API Upload. |
 | `generate_svg_report` | No | `false` | Generate an SVG visual report from the metrics. |
+| `clean_concurrent_runs` | No | `false` | Delete older skipped/cancelled concurrent observer runs for the same commit. |
 
 ## Troubleshooting
 
