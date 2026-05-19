@@ -1,5 +1,8 @@
 # GitHub Actions Centralized Telemetry Observer
 
+<!-- telemetry-svg-start -->
+<!-- telemetry-svg-end -->
+
 This repository implements a Centralized Workflow Telemetry Collector (Observer) designed to securely monitor and measure all workflow activity tied to a specific Commit SHA, without interfering directly with the workloads being monitored.
 
 Per the MVP design, this pattern removes the need to embed telemetry logic directly inside other workflow files. Instead, the centralized observer automatically initializes, discovers what is executing, waits for all executions to finish, and extracts their structural telemetry (including durations, job steps, and event metadata).
@@ -35,7 +38,7 @@ on:
 
 permissions:
   actions: read   # Required to read workflow run statuses
-  contents: read  # Required to grab commit metadata
+  contents: write # Required to grab commit metadata and auto-commit the SVG
 
 jobs:
   telemetry:
@@ -78,6 +81,24 @@ jobs:
       #   with:
       #     name: workflow-svg-report
       #     path: ${{ steps.observer.outputs.svg_path || 'workflow_status.svg' }}
+      
+      # (Optional) Auto-Commit the SVG directly into your Repository and embed in README!
+      # Remember to add `<!-- telemetry-svg-start -->` to your README.md where you want the graph to appear.
+      # - name: Auto-Commit SVG to Repository
+      #   if: success()
+      #   run: |
+      #     if [ -f "${{ steps.observer.outputs.svg_path || 'workflow_status.svg' }}" ]; then
+      #       if ! grep -q "\!\[Workflow Timeline\]" README.md; then
+      #         sed -i 's/<!-- telemetry-svg-start -->/<!-- telemetry-svg-start -->\n![Workflow Timeline](workflow_status.svg)/g' README.md
+      #       fi
+      #       git config --global user.name "github-actions[bot]"
+      #       git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      #       git add workflow_status.svg README.md
+      #       if ! git diff --staged --quiet; then
+      #         git commit -m "docs: Auto-update workflow telemetry SVG timeline"
+      #         git push
+      #       fi
+      #     fi
 ```
 
 ## Triggering on Manual Workflows
@@ -107,6 +128,7 @@ To ensure coverage, synthetic test workflows have been scaffolded to mimic activ
 - `03 - Test Long Running` (Simulates heavy load taking 30+ seconds)
 - `04 - Test Upstream Dependent`
 - `05 - Test Downstream Dependent` (Only executes when 04 finishes successfully)
+- `06 - Test Failed Action`
 
 ## Data Fields Output
 

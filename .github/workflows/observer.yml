@@ -20,7 +20,7 @@ concurrency:
 
 permissions:
   actions: read
-  contents: read
+  contents: write # Upgraded to 'write' to allow committing the SVG back to the repo
 
 jobs:
   telemetry:
@@ -55,3 +55,36 @@ jobs:
         with:
           name: workflow-svg-report
           path: workflow_status.svg
+          
+      # --- Auto-Commit SVG Feature (Optional) ---
+      # This step automatically commits the generated workflow_status.svg file to the repository 
+      # and injects it into the README.md so it displays cleanly in your project.
+      - name: Auto-Commit SVG to Repository
+        if: success()
+        run: |
+          if [ -f "workflow_status.svg" ]; then
+            # 1. Inject the SVG link into README.md if it doesn't already exist
+            if ! grep -q "\!\[Workflow Timeline\](workflow_status.svg)" README.md; then
+              echo "Injecting SVG markdown into README.md"
+              
+              # Simple inline append replacing the placeholder comment
+              sed -i 's/<!-- telemetry-svg-start -->/<!-- telemetry-svg-start -->\n![Workflow Timeline](workflow_status.svg)/g' README.md
+            fi
+            
+            # 2. Configure Git bot identity
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            
+            # 3. Stage the files
+            git add workflow_status.svg README.md
+            
+            # 4. Check if there are actual diffs to commit
+            if ! git diff --staged --quiet; then
+              git commit -m "docs: Auto-update workflow telemetry SVG timeline"
+              git push
+            else
+              echo "No visual changes in the SVG. Skipping commit."
+            fi
+          else
+            echo "No workflow_status.svg found, skipping document update."
+          fi
