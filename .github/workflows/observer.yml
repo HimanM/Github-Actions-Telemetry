@@ -39,7 +39,8 @@ jobs:
           ignored_workflows: 'Observer,CodeQL,Dependabot'
           # api_url: 'https://api.yourdomain.com/telemetry'
           # api_key: ${{ secrets.TELEMETRY_API_KEY }}
-          api_key: 'secret_api_key_for_testing'
+          api_url : 'https://httpbin.org/post' # Remove this fucking Example API endpoint for testing
+          api_key: 'secret_api_key_for_testing' # Remove this fucking line after testing
           generate_svg_report: 'true'
 
         
