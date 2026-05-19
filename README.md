@@ -88,8 +88,8 @@ jobs:
       #   if: success()
       #   run: |
       #     if [ -f "${{ steps.observer.outputs.svg_path || 'workflow_status.svg' }}" ]; then
-      #       if ! grep -q "\!\[Workflow Timeline\]" README.md; then
-      #         sed -i 's/<!-- telemetry-svg-start -->/<!-- telemetry-svg-start -->\n![Workflow Timeline](workflow_status.svg)/g' README.md
+      #       if ! grep -q '\[Workflow Timeline\]' README.md; then
+      #         sed -i 's|<!-- telemetry-svg-start -->|<!-- telemetry-svg-start -->\n![Workflow Timeline](workflow_status.svg)|g' README.md
       #       fi
       #       git config --global user.name "github-actions[bot]"
       #       git config --global user.email "github-actions[bot]@users.noreply.github.com"
