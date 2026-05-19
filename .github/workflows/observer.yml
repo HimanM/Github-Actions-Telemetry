@@ -77,15 +77,13 @@ jobs:
         run: |
           if [ -f "workflow_status.svg" ]; then
             # 1. Inject the SVG link into README.md if it doesn't already exist
-            # We check ONLY inside the telemetry-svg-start/end block to avoid matching
-            # the documented example elsewhere in the README.
-            SVG_ALREADY_INJECTED=$(awk '/<!-- telemetry-svg-start -->/{found=1} found && /!\[Workflow Timeline\]/{print "yes"; exit} /<!-- telemetry-svg-end -->/{found=0}' README.md)
-            
-            if [ "$SVG_ALREADY_INJECTED" != "yes" ]; then
+            # We search only the first 15 lines of README.md to avoid matching any example code blocks
+            # in the documentation at the bottom of the file.
+            if ! head -n 15 README.md | grep -q '!\[Workflow Timeline\]'; then
               echo "Injecting SVG markdown into README.md"
               sed -i '/<!-- telemetry-svg-start -->/a ![Workflow Timeline](workflow_status.svg)' README.md
             else
-              echo "SVG link already present in README.md placeholder block. Skipping injection."
+              echo "SVG link already present in README.md header. Skipping injection."
             fi
             
             # 2. Configure Git bot identity

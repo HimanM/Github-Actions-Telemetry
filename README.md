@@ -88,9 +88,8 @@ jobs:
       #   if: success()
       #   run: |
       #     if [ -f "${{ steps.observer.outputs.svg_path || 'workflow_status.svg' }}" ]; then
-      #       # Inject the SVG link into README.md only inside the placeholder comments to avoid false-positives
-      #       SVG_ALREADY_INJECTED=\$(awk '/<!-- telemetry-svg-start -->/{found=1} found && /!\\[Workflow Timeline\\]/{print "yes"; exit} /<!-- telemetry-svg-end -->/{found=0}' README.md)
-      #       if [ "\$SVG_ALREADY_INJECTED" != "yes" ]; then
+      #       # Inject the SVG link into README.md only if it's not already in the first 15 lines (avoids false-positives)
+      #       if ! head -n 15 README.md | grep -q '!\[Workflow Timeline\]'; then
       #         sed -i '/<!-- telemetry-svg-start -->/a ![Workflow Timeline](workflow_status.svg)' README.md
       #       fi
       #       git config --global user.name "github-actions[bot]"

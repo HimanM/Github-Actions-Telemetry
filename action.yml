@@ -42,6 +42,12 @@ runs:
       shell: bash
       run: pip install requests
       
+    - name: Mask Sensitive Inputs
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.api_url }}" ]; then echo "::add-mask::${{ inputs.api_url }}"; fi
+        if [ -n "${{ inputs.api_key }}" ]; then echo "::add-mask::${{ inputs.api_key }}"; fi
+
     - name: Run Telemetry Observer
       id: observer
       shell: bash
@@ -58,8 +64,6 @@ runs:
         API_URL: ${{ inputs.api_url }}
         API_KEY: ${{ inputs.api_key }}
       run: |
-        if [ -n "$API_URL" ]; then echo "::add-mask::$API_URL"; fi
-        if [ -n "$API_KEY" ]; then echo "::add-mask::$API_KEY"; fi
         python ${{ github.action_path }}/scripts/observer.py
 
     - name: Generate SVG Report
