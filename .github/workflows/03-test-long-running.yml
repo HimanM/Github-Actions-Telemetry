@@ -1,0 +1,13 @@
+name: 03 - Test Long Running
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  run-long:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Work Hard
+        run: |
+          echo "Simulating 30 seconds..."
+          sleep 30
+          echo "Done!"

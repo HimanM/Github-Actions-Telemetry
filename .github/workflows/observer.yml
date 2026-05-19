@@ -1,0 +1,41 @@
+name: Observer
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: observer-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  telemetry:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: pip install requests
+        
+      - name: Run Telemetry Observer
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+        run: python scripts/observer.py
+        
+      - name: Upload Telemetry Data
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: telemetry-test-jsons
+          path: test_jsons/

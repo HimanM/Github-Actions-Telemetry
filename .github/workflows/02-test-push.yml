@@ -1,0 +1,7 @@
+name: 02 - Test Commit Trigger
+on: push
+jobs:
+  run-push:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This runs on a push"

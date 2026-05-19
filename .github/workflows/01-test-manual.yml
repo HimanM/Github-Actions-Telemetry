@@ -1,0 +1,7 @@
+name: 01 - Test Manual Trigger
+on: workflow_dispatch
+jobs:
+  run-manual:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This is a simple manual job"
