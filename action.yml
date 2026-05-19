@@ -52,4 +52,7 @@ runs:
         IGNORED_WORKFLOWS: ${{ inputs.ignored_workflows }}
         API_URL: ${{ inputs.api_url }}
         API_KEY: ${{ inputs.api_key }}
-      run: python ${{ github.action_path }}/scripts/observer.py
+      run: |
+        if [ -n "$API_URL" ]; then echo "::add-mask::$API_URL"; fi
+        if [ -n "$API_KEY" ]; then echo "::add-mask::$API_KEY"; fi
+        python ${{ github.action_path }}/scripts/observer.py

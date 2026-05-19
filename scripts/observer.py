@@ -259,7 +259,7 @@ def main():
     
     # 8. External API Upload (Optional)
     if EXTERNAL_API_URL:
-        print(f"Uploading telemetry to external API: {EXTERNAL_API_URL}")
+        print("Uploading telemetry to external API...")
         upload_headers = {"Content-Type": "application/json"}
         if EXTERNAL_API_KEY:
             upload_headers["Authorization"] = f"Bearer {EXTERNAL_API_KEY}"
