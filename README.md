@@ -1,45 +1,71 @@
 # GitHub Actions Centralized Telemetry Observer
 
-<!-- telemetry-svg-start -->
-![Workflow Timeline](workflow_status.svg)
-<!-- telemetry-svg-end -->
-
 This repository implements a Centralized Workflow Telemetry Collector (Observer) designed to securely monitor and measure all workflow activity tied to a specific Commit SHA, without interfering directly with the workloads being monitored.
+
+## Repository Metadata
+
+**Topics:** SVG generation, JSON output, CLI/API tooling, Visualization, Security masking, Developer tooling, Python
+
+## Project Overview
 
 Per the MVP design, this pattern removes the need to embed telemetry logic directly inside other workflow files. Instead, the centralized observer automatically initializes, discovers what is executing, waits for all executions to finish, and extracts their structural telemetry (including durations, job steps, and event metadata).
 
-## Architecture
+### Architecture
 
 * **Observer Trigger**: Triggered automatically via `push`, `pull_request`, and `workflow_dispatch`. It is also configured via `workflow_run` to capture manual triggers.
 * **Identifier**: Bound strictly to `github.sha`.
 * **Stabilization Engine**: Listens to GitHub Action API responses until the number of reported workflow runs matching the trigger SHA stabilizes. This accounts for asynchronous creation and polling latency.
 * **Metrics Collector**: Harvests workflow run metadata, resolves internal job details, and attaches precise timestamps alongside Git commit history.
 
-## How It Works
+## Installation
 
-1. A repository event occurs (e.g., a push, a pull request, or a manual trigger).
-2. The `.github/workflows/observer.yml` workflow begins execution. It possesses native logic to ignore evaluating itself.
-3. The observer utilizes a standardized composite action (`action.yml`) ensuring minimal setup in client workflows.
-4. It polls the repository's action runs endpoints continuously until it confirms all workflows linked to the SHA have reached a terminal state.
-5. It exports a comprehensive JSON payload to `test_jsons/main_{datetime}_{sha}.json`.
-6. The payload is uploaded as a standard GitHub Action Artifact named `telemetry-test-jsons`.
+### Prerequisites
 
-### Integrating into other Repositories
+* Python 3.11
 
-Because the core polling and visualization logic is tightly wrapped inside a Composite Action (`action.yml`), integrating this into *any* other GitHub repository is incredibly simple. Other users do not need to clone this repository; they only need to reference it directly using the `uses:` syntax.
+### Dependencies
 
-Here is a complete usage example to drop into any external repository:
+The following dependencies are required to run the Python scripts locally or are handled automatically when run as a GitHub Action:
+
+* `requests`
+
+You can install dependencies locally using:
+
+```bash
+pip install requests
+```
+
+## Security Notes
+
+The Action is designed to be secure by default.
+
+* **Secret Masking:** Sensitive variables provided to the Action, specifically `api_url` and `api_key`, are explicitly masked from workflow logs using `::add-mask::` during execution.
+* **Examples:** All examples provided in this documentation use `<MASKED_TOKEN>` or similar dummy values. These are masked/redacted values. You must supply your own valid secrets via GitHub Secrets (e.g., `${{ secrets.GITHUB_TOKEN }}`).
+* **Safe Usage:** Ensure that any external webhook URLs or API keys you provide are stored securely as GitHub Actions Secrets and never hardcoded into your workflow YAML.
+
+## Usage Guide
+
+Because the core polling and visualization logic is tightly wrapped inside a Composite Action (`action.yml`), integrating this into any other GitHub repository is incredibly simple. Other users do not need to clone this repository; they only need to reference it directly using the `uses:` syntax.
+
+There are two primary methods for generating output: JSON-only and SVG+JSON combined output.
+
+### Method 1: JSON Only Output
+
+By default, the Action generates a comprehensive JSON payload. This is ideal if you only need the raw telemetry metrics for downstream analysis.
+
+In this workflow, the Action exports the metrics to a JSON file. The exact generated JSON path is exposed via the `json_path` output variable.
+
+**Example Usage:**
 
 ```yaml
-name: Global Telemetry Observer
+name: Global Telemetry Observer (JSON Only)
 
 on:
   push:
   pull_request:
 
 permissions:
-  actions: read   # Required to read workflow run statuses
-  contents: write # Required to grab commit metadata and auto-commit the SVG
+  actions: read
 
 jobs:
   telemetry:
@@ -48,64 +74,83 @@ jobs:
       - name: Observer Telemetry Agent
         uses: HimanM/Github-Actions-Telemetry@main
         with:
-          # Required: GitHub Token to securely authenticate with GitHub's REST API
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          
-          # Optional Configuration (Defaults shown below)
-          initial_delay: '60'               # Wait 60s before tracking starts to allow other jobs to queue
-          max_timeout: '3600'               # Global timeout in seconds (1 hour) before giving up
-          poll_interval: '15'               # Seconds between API polls for live jobs
-          ignored_workflows: 'Observer,CodeQL,Dependabot' # Comma-separated list to prevent recursion
-          
-          # Optional: External webhook export
-          # api_url: 'https://api.yourdomain.com/v1/telemetry'
-          # api_key: ${{ secrets.TELEMETRY_API_KEY }}
+          generate_svg_report: 'false'
 
-          # Optional: Generate a visual SVG timeline report (Default: false)
-          # generate_svg_report: 'true'
-
-      # By default, the Action generates a comprehensive JSON payload.
-      # You can upload this JSON data as an artifact to review the raw metrics.
       - name: Upload JSON Telemetry Data
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: telemetry-test-jsons
-          # The Action exposes the exact generated JSON path for you!
           path: ${{ steps.observer.outputs.json_path }}
-
-      # (Optional) If you set `generate_svg_report: 'true'` above, 
-      # the Action also outputs the path to the SVG diagram so you can upload it!
-      # - name: Upload SVG Timeline Report
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: workflow-svg-report
-      #     path: ${{ steps.observer.outputs.svg_path || 'workflow_status.svg' }}
-      
-      # (Optional) Auto-Commit the SVG directly into your Repository and embed in README!
-      # Remember to add `<!-- telemetry-svg-start -->` to your README.md where you want the graph to appear.
-![Workflow Timeline](workflow_status.svg)
-      # - name: Auto-Commit SVG to Repository
-      #   if: success()
-      #   run: |
-      #     if [ -f "${{ steps.observer.outputs.svg_path || 'workflow_status.svg' }}" ]; then
-      #       # Inject the SVG link into README.md only if it's not already in the first 15 lines (avoids false-positives)
-      #       if ! head -n 15 README.md | grep -q '!\[Workflow Timeline\]'; then
-      #         sed -i '/<!-- telemetry-svg-start -->/a ![Workflow Timeline](workflow_status.svg)' README.md
-![Workflow Timeline](workflow_status.svg)
-      #       fi
-      #       git config --global user.name "github-actions[bot]"
-      #       git config --global user.email "github-actions[bot]@users.noreply.github.com"
-      #       git add workflow_status.svg README.md
-      #       if ! git diff --staged --quiet; then
-      #         git commit -m "docs: Auto-update workflow telemetry SVG timeline"
-      #         git push
-      #       fi
-      #     fi
 ```
 
-## Triggering on Manual Workflows
+### Method 2: SVG + JSON Output
+
+If you prefer a visual report in addition to the raw data, you can enable SVG generation. This method uses the metrics from the JSON payload to generate a timeline report (`workflow_status.svg`).
+
+In this workflow, the `generate_svg_report: 'true'` option is set. The Action will generate the SVG file and expose its path via the `svg_path` output variable.
+
+**Example Usage:**
+
+```yaml
+name: Global Telemetry Observer (SVG + JSON)
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  telemetry:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Observer Telemetry Agent
+        uses: HimanM/Github-Actions-Telemetry@main
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          generate_svg_report: 'true'
+
+      - name: Upload SVG Timeline Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workflow-svg-report
+          path: ${{ steps.observer.outputs.svg_path || 'workflow_status.svg' }}
+```
+
+### Examples with External Webhook
+
+If you wish to POST the resulting JSON telemetry directly to your API, ensure you use GitHub Secrets to mask your credentials.
+
+```yaml
+      - name: Observer Telemetry Agent
+        uses: HimanM/Github-Actions-Telemetry@main
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          api_url: 'https://api.yourdomain.com/v1/telemetry'
+          api_key: ${{ secrets.TELEMETRY_API_KEY }} # Note: Always use Secrets! Example: <MASKED_TOKEN>
+```
+
+## Configuration
+
+The composite action (`action.yml`) accepts the following inputs:
+
+* `github_token` (Required): GitHub token for API access.
+* `initial_delay` (Optional): Initial wait time (in seconds) before tracking starts. Default: `60`.
+* `max_timeout` (Optional): Global timeout (in seconds) before giving up. Default: `3600`.
+* `poll_interval` (Optional): Seconds to wait between API polls. Default: `15`.
+* `ignored_workflows` (Optional): Comma separated list of workflow names to ignore. Default: `Observer,CodeQL,Dependabot`.
+* `api_url` (Optional): Optional URL to POST the JSON payload to.
+* `api_key` (Optional): Optional Auth Bearer token/key for the API Upload.
+* `generate_svg_report` (Optional): Generate an SVG visual report from the metrics. Default: `false`.
+
+## Troubleshooting
+
+### Triggering on Manual Workflows
 
 GitHub Actions handles manual triggers (`workflow_dispatch`) as targeted events. When a user manually triggers a workflow, GitHub does not broadcast a generic event to the rest of the repository, meaning the Observer would not automatically start. 
 
@@ -123,6 +168,20 @@ Example:
     types:
       - requested
 ```
+
+## Developer Section
+
+If you would like to test or modify the scripts locally:
+
+1.  **Clone the repository.**
+2.  **Ensure Python 3.11 is installed.**
+3.  **Install dependencies:** `pip install requests`.
+4.  **Local Execution:**
+    *   To run the observer script, supply the required environment variables:
+        `GITHUB_TOKEN=<MASKED_TOKEN> GITHUB_REPOSITORY=owner/repo GITHUB_SHA=abc123 python scripts/observer.py`
+    *   To test SVG generation locally, place a sample JSON file in the `test_jsons` directory and run:
+        `python scripts/generate_svg.py`
+
 
 ## Included Test Workflows
 
