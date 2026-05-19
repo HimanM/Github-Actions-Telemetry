@@ -102,8 +102,10 @@ def cleanup_duplicate_observers():
                     resp = requests.delete(del_url, headers=HEADERS)
                     if resp.status_code == 204:
                         deleted += 1
+                    else:
+                        print(f"Failed to delete {r['id']}: HTTP {resp.status_code} - {resp.text}")
                 except Exception as e:
-                    print(f"Failed to delete {r['id']}: {e}")
+                    print(f"Exception while deleting {r['id']}: {e}")
                     
     if deleted > 0:
         print(f"Successfully cleaned up {deleted} duplicate observer runs.")

@@ -23,7 +23,7 @@ concurrency:
 
 # --- Required Permissions ---
 permissions:
-  actions: read
+  actions: write # Required to delete duplicate workflow runs
   contents: write # Upgraded to 'write' to allow committing the SVG back to the repo
 
 # --- Core Telemetry Job ---
