@@ -11,6 +11,7 @@ REPO = os.environ.get("GITHUB_REPOSITORY")
 SHA = os.environ.get("GITHUB_SHA")
 REF = os.environ.get("GITHUB_REF_NAME")
 EVENT = os.environ.get("GITHUB_EVENT_NAME")
+INITIAL_DELAY = int(os.environ.get("INITIAL_DELAY", "60"))
 
 API_BASE = "https://api.github.com"
 HEADERS = {
@@ -22,7 +23,7 @@ OUTPUT_DIR = "test_jsons"
 
 IGNORED_WORKFLOW_NAMES = ["Observer", "CodeQL", "Dependabot"]
 NON_TERMINAL_STATES = ["queued", "waiting", "requested", "pending", "in_progress"]
-MAX_TIMEOUT_SECONDS = 1200 # 20 minutes timeout
+MAX_TIMEOUT_SECONDS = 3600 # 1 hour timeout (increased from 20 mins)
 POLL_INTERVAL = 15
 
 # --- Utils ---
@@ -81,8 +82,8 @@ def main():
     observer_started_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     # 1. Initial Delay
-    print("Waiting 15 seconds for initial workflow evaluations...")
-    time.sleep(15)
+    print(f"Waiting {INITIAL_DELAY} seconds for initial workflow evaluations...")
+    time.sleep(INITIAL_DELAY)
 
     # 2. Stabilization Loop
     print("Stabilizing workflow discovery...")
